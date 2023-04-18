@@ -16,23 +16,26 @@ class User(Base):
     username = Column(String(250), nullable=False)
     email = Column(String(400), nullable=False)
     password = Column(String(300), nullable=False)
+    follower_id = Column(Integer, ForeignKey('follower.id'),nullable=False)
+    follower = relationship(Followers)
     created_at = Column(DateTime)
     updated_at = Column(DateTime)
 
 
 class Post(Base):
-    __tablename__ = 'planet'
-    # Here we define columns for the table planet.
+    __tablename__ = 'post'
+    # Here we define columns for the table post.
     # Notice that each column is also a normal Python instance attribute.
     id = Column(Integer, primary_key=True)
     description = Column(String(250), nullable=False)
     user_id = Column(Integer, ForeignKey('user.id'),nullable=False)
+    user = relationship(User)
     created_at = Column(DateTime)
     updated_at = Column(DateTime)
 
-class Followers(Base):
-    __tablename__ = 'vehicle'
-    # Here we define columns for the table vehicle.
+class Follower(Base):
+    __tablename__ = 'follower'
+    # Here we define columns for the table followers.
     # Notice that each column is also a normal Python instance attribute.
     id = Column(Integer, primary_key=True)
     name = Column(String(250), nullable=False)
