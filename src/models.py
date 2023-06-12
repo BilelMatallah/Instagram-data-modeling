@@ -1,6 +1,6 @@
 import os
 import sys
-from sqlalchemy import Column, ForeignKey, Integer, String
+from sqlalchemy import Column, ForeignKey, Integer, String, DateTime
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import relationship
 from sqlalchemy import create_engine
@@ -10,42 +10,51 @@ Base = declarative_base()
 
 class User(Base):
     __tablename__ = 'user'
-    # Here we define columns for the table user
+    
     id = Column(Integer, primary_key=True)
-    name = Column(String(250), nullable=False)
     username = Column(String(250), nullable=False)
     email = Column(String(400), nullable=False)
     password = Column(String(300), nullable=False)
-    follower_id = Column(Integer, ForeignKey('follower.id'),nullable=False)
-    follower = relationship(Followers)
     created_at = Column(DateTime)
     updated_at = Column(DateTime)
 
 
 class Post(Base):
     __tablename__ = 'post'
-    # Here we define columns for the table post.
-    # Notice that each column is also a normal Python instance attribute.
+
     id = Column(Integer, primary_key=True)
-    description = Column(String(250), nullable=False)
-    user_id = Column(Integer, ForeignKey('user.id'),nullable=False)
+    user_id = Column(Integer, ForeignKey('user.id'))
     user = relationship(User)
+    content = Column(String(250), nullable=False)
     created_at = Column(DateTime)
     updated_at = Column(DateTime)
 
+
 class Follower(Base):
     __tablename__ = 'follower'
-    # Here we define columns for the table followers.
-    # Notice that each column is also a normal Python instance attribute.
+
     id = Column(Integer, primary_key=True)
-    name = Column(String(250), nullable=False)
+    user_id = Column(Integer, ForeignKey('user.id'),nullable=False)
+    user = relationship(User)
 
 class Comments(Base):
-    __tablename__ = 'character'
-    # Here we define columns for the table character.
-    # Notice that each column is also a normal Python instance attribute.
+    __tablename__ = 'comment'
+    
     id = Column(Integer, primary_key=True)
-    name = Column(String(250), nullable=False)
+    user_id = Column(Integer, ForeignKey('user.id'))
+    user = relationship(User)
+    post_id = Column(Integer, ForeignKey('post.id'))
+    post = relationship(Post)
+    content = Column(String(150), nullable=False)
+
+class Likes(Base):
+    __tablename__= 'likes'
+    
+    id = Column(Integer, primary_key=True)
+    user_id = Column(Integer, ForeignKey('user.id'))
+    post_id = Column(Integer, ForeignKey('post.id'))
+    user = relationship(User)
+    post = relationship(Post)
 
 
     def to_dict(self):
